@@ -2,6 +2,7 @@
 
 Windhager BioWinTouch 2 goes cloud native
 
+Hint: python implementation is located in separate branch
 
 ## Accessing the UI
 

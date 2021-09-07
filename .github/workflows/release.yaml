@@ -1,0 +1,22 @@
+name: Release
+on: [ push, pull_request ]
+jobs:
+  build:
+    name: GoBuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+      # - name:  prepare go-semantic-release
+      #   run: |
+      #     wget  https://github.com/Nightapes/go-semantic-release/releases/download/v1.3.0/go-semantic-release
+      #     chmod +x go-semantic-release
+      # - name: build
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #       <your run here>
+      # - name: Release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: ./go-semantic-release release --loglevel info

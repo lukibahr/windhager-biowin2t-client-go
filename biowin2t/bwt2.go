@@ -1,4 +1,4 @@
-package windhager
+package biowin2t
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	mesurl = "http://192.168.2.140/api/1.0/lookup"
+	version = "1.0.0"
 )
 
 // WindhagerClient represents the WindhagerClient struct .
@@ -25,7 +25,7 @@ type WindhagerClient struct {
 }
 
 // NewWindhagerClient creates new client with given credentials
-func NewWindhagerClient(username, password string) *WindhagerClient {
+func NewWindhagerClient(mesurl, username, password string) *WindhagerClient {
 	return &WindhagerClient{
 		MesEndpoint: mesurl,
 		MesUsername: username,
@@ -59,11 +59,23 @@ type errorResponse struct {
 }
 
 type successResponse struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
+	StatusCode int         `json:"code"`
+	Body       interface{} `json:"body"` // e.g. {"result: success"}
 }
 
-func (c *WindhagerClient) sendRequest(req *http.Request) (*Metric, error) {
+func respondWithError(w http.ResponseWriter, code int, message string) {
+	respondWithJSON(w, code, map[string]string{"error": message})
+}
+
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
+func (c *WindhagerClient) sendRequest(req *http.Request) (*successResponse, error) {
 
 	var metric Metric
 	req.Header.Set("Accept", "application/json; charset=utf-8")
@@ -86,10 +98,15 @@ func (c *WindhagerClient) sendRequest(req *http.Request) (*Metric, error) {
 		return nil, err
 	}
 
-	return &metric, nil
+	response := successResponse{
+		StatusCode: resp.StatusCode,
+		Body:       metric,
+	}
+
+	return &response, nil
 }
 
-func (c *WindhagerClient) GetTimeUntilNextMajorMaintenanceInHours(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetTimeUntilNextMajorMaintenanceInHours(ctx context.Context) (*successResponse, error) {
 	//http://192.168.2.121/api/1.0/lookup/1/60/0/98/9
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/9", c.MesEndpoint), nil)
 	if err != nil {
@@ -102,10 +119,11 @@ func (c *WindhagerClient) GetTimeUntilNextMajorMaintenanceInHours(ctx context.Co
 	if err != nil {
 		return nil, err
 	}
+
 	return res, nil
 }
 
-func (c *WindhagerClient) GetTimeUntilNextMaintenanceInHours(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetTimeUntilNextMaintenanceInHours(ctx context.Context) (*successResponse, error) {
 	// - Laufzeit bis Reinigung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/8
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/8", c.MesEndpoint), nil)
 	if err != nil {
@@ -119,11 +137,10 @@ func (c *WindhagerClient) GetTimeUntilNextMaintenanceInHours(ctx context.Context
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetCountOfBurningUnit(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetCountOfBurningUnit(ctx context.Context) (*successResponse, error) {
 	// - Anzahl der Brennerstarts: http://192.168.2.121/api/1.0/lookup/1/60/0/98/3
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/3", c.MesEndpoint), nil)
 	if err != nil {
@@ -136,12 +153,10 @@ func (c *WindhagerClient) GetCountOfBurningUnit(ctx context.Context) (*Metric, e
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetExhaustGases(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetExhaustGases(ctx context.Context) (*successResponse, error) {
 	// - Temperatur Abgas: http://192.168.2.121/api/1.0/lookup/1/60/0/98/1
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/1", c.MesEndpoint), nil)
 	if err != nil {
@@ -155,11 +170,10 @@ func (c *WindhagerClient) GetExhaustGases(ctx context.Context) (*Metric, error) 
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetCurrentBoilerPerformance(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetCurrentBoilerPerformance(ctx context.Context) (*successResponse, error) {
 	// - Aktuelle Kesselleistung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/0
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/0", c.MesEndpoint), nil)
 	if err != nil {
@@ -173,11 +187,10 @@ func (c *WindhagerClient) GetCurrentBoilerPerformance(ctx context.Context) (*Met
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetCurrentTemperature(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetCurrentTemperature(ctx context.Context) (*successResponse, error) {
 	// - Kesseltemperatur Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/1
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/1", c.MesEndpoint), nil)
 	if err != nil {
@@ -191,11 +204,10 @@ func (c *WindhagerClient) GetCurrentTemperature(ctx context.Context) (*Metric, e
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetCombustorTemperature(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetCombustorTemperature(ctx context.Context) (*successResponse, error) {
 	// - Brennkammertemperatur: http://192.168.2.121/api/1.0/lookup/1/60/0/100/2
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/2", c.MesEndpoint), nil)
 	if err != nil {
@@ -209,11 +221,10 @@ func (c *WindhagerClient) GetCombustorTemperature(ctx context.Context) (*Metric,
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetOperationalPhase(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetOperationalPhase(ctx context.Context) (*successResponse, error) {
 	// - Aktuelle Betriebsphase: http://192.168.2.121/api/1.0/lookup/1/60/0/100/3
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/3", c.MesEndpoint), nil)
 	if err != nil {
@@ -227,11 +238,10 @@ func (c *WindhagerClient) GetOperationalPhase(ctx context.Context) (*Metric, err
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
-func (c *WindhagerClient) GetPelletAmountOfScrewConveyor(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetPelletAmountOfScrewConveyor(ctx context.Context) (*successResponse, error) {
 	// - Brennstoffmenge Förderschnecke Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/9
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/9", c.MesEndpoint), nil)
 	if err != nil {
@@ -245,12 +255,11 @@ func (c *WindhagerClient) GetPelletAmountOfScrewConveyor(ctx context.Context) (*
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }
 
 // GetTotalOperationalRuntime returns total hours
-func (c *WindhagerClient) GetTotalOperationalRuntime(ctx context.Context) (*Metric, error) {
+func (c *WindhagerClient) GetTotalOperationalRuntime(ctx context.Context) (*successResponse, error) {
 	// - Betriebsstunden: http://192.168.2.121/api/1.0/lookup/1/60/0/98/4
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/4", c.MesEndpoint), nil)
 	if err != nil {
@@ -264,6 +273,5 @@ func (c *WindhagerClient) GetTotalOperationalRuntime(ctx context.Context) (*Metr
 		return nil, err
 	}
 
-	fmt.Print(res.Value)
 	return res, nil
 }

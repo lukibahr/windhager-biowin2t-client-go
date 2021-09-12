@@ -3,7 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=go,macos,visualstudiocode,jetbrains
 
 main.go
-
+BIOWIN2T.md
 .env
 
 ### Go ###

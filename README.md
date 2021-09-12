@@ -1,21 +1,58 @@
 # windhager-biowint2-client-go
 
-!!! REFACTOR PROJECT LIKE THIS: https://github.com/google/go-github
-
-Windhager BioWinTouch 2 goes cloud native
-
-Hint: python implementation is located in separate branch
+Windhager BioWinTouch 2 goes cloud native with Go.
 
 ## Accessing the UI
 
-The UI is served by the Windhager pellet appliance built-in MES inifinity controller. Behind the UI, a REST API serves all values that are avaialable through the ui or the touch panel.
-The Username, named `Service` has access to the UI via basic authentication and the password can be fetched using the Windhager Connect platform [https://connect.windhager.com](https://connect.windhager.com)
+The UI is served by the Windhager pellet appliance built-in MES inifinity controller. Behind the UI, a REST API serves all values that are avaialable through the ui or the touch panel. More information about the mes infinity controller can be found here: [https://www.windhager.com/int_en/products/control/mes-infinity/](https://www.windhager.com/int_en/products/control/mes-infinity/)
 
-More information about the mes infinity controller can be found here: [https://www.windhager.com/int_en/products/control/mes-infinity/](https://www.windhager.com/int_en/products/control/mes-infinity/)
+## Installation
+
+go-github is compatible with modern Go releases in module mode, with Go installed:
+
+```bash
+go get github.com/google/go-github/v39
+```
+
+will resolve and add the package to the current development module, along with its dependencies.
+
+Alternatively the same can be achieved if you use import in a package:
+
+```go
+import "github.com/google/go-github/v39/github"
+```
+
+and run `go get` without parameters.
+
+Finally, to use the top-of-trunk version of this repo, use the following command:
+
+```bash
+go get github.com/google/go-github/v39@master
+```
+
+## Usage
+
+```go
+import "github.com/lukibahr/windhager-biowin2t-client-go" // with go modules enabled (GO111MODULE=on or outside GOPATH)
+```
+
+Construct a new `NewWindhagerClient` client, then use the various functions on the client to
+access different parts of the Windhager BioWin2T API. Make sure to pass the required Url, Username and Password to the client. For example:
+
+```go
+client := github.NewWindhagerClient("url", "username", "password")
+```
+
+Some API methods have optional parameters that can be passed. For example:
+
+NOTE: Using the [context](https://godoc.org/context) package, one can easily
+pass cancelation signals and deadlines to various services of the client for
+handling a request. In case there is no context available, then `context.Background()`
+can be used as a starting point.
 
 ## Curling the API
 
-The api endpoint is available under `http://192.168.2.121/api/1.0/lookup/<OID>`. To add the digest authentication, use the `--digest` parameter like the following: `curl http://192.168.2.140/api/1.0/lookup/1/60/0/100/9 --digest -u "$USERNAME:$PASSWORD"`
+The api endpoint is available under `http://<your-host>/api/1.0/lookup/<OID>`. To add the digest authentication, use the `--digest` parameter like the following: `curl http://<your-host>/api/1.0/lookup/<OID> --digest -u "$USERNAME:$PASSWORD"`
 
 Sample response looks like the following:
 
@@ -38,75 +75,5 @@ Sample response looks like the following:
     "writeProt": false
 }
 ```
-### BioWIn2
-
-- Laufzeit bis Hauptreinigung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/9 (done)
-- Laufzeit bis Reinigung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/8
-- Betriebsstunden: http://192.168.2.121/api/1.0/lookup/1/60/0/98/4
-- Anzahl der Brennerstarts: http://192.168.2.121/api/1.0/lookup/1/60/0/98/3
-- Temperatur Abgas: http://192.168.2.121/api/1.0/lookup/1/60/0/98/1
-- Aktuelle Kesselleistung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/0
-
-- Kesseltemperatur Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/1
-- Brennkammertemperatur: http://192.168.2.121/api/1.0/lookup/1/60/0/100/2
-- Aktuelle Betriebsphase: http://192.168.2.121/api/1.0/lookup/1/60/0/100/3
-- Brennstoffmenge Förderschnecke Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/9
-
-#### Betriebsphasen
-
-- (3) Standby: In dieser Betriebsphase wird von der vorhandenen Regelung keine Wärme-anforderung übertragen. Der Brenner ist ausgeschaltet und der Kesseltempe-ratur-Sollwert ist 0 °C
-- () Vorspülen: Das Saugzuggebläse läuft, der Brennraum des FireWIN wird mit Frischluftdurchspült. Diese Phase kann einige Minuten dauern bevor der Brenner inBetrieb geht
-- (6) Zündphase: Das Saugzuggebläse läuft, Pellets werden in den Brennertopf gefördert undentzündet. Wird eine Flammenbildung erkannt, wird in die Flammenstabili-sierung übergegangen
-- () Flammenstabilisierung: Nach dem Zündvorgang wird eine gleichmäßige Verbrennung aufgebaut undanschließend in den Modulationsbetrieb geschaltet
-- () Modulationsbetrieb: Der Brenner ist im Modulationsbetrieb. Die Leistung wird stufenlos zwischen30 % und 100 % geregelt
-- Ausbrand: Die Verbrennung wird eingestellt. Der Pelletstransport in den Brennertopf wirdgestoppt, das Saugzuggebläse läuft nach, bis die restlichen Pellets verbranntsind und der Brennertopf abgekühlt ist
-- Brenner AUS: Die Wärmeanforderung von der Regelung ist vorhandenen, aber die Kessel-temperatur (Istwert) ist höher als der Kesseltemperatur-Sollwert. Daher ist die Verbrennung eingestellt und der Brenner ausgeschaltet
 
 
-### Huber/WW
-
-- Warmwasser temp ist-wert (oben) soll-wert unten: http://192.168.2.121/api/1.0/lookup/1/15/0/114
-- Aussentemperatur: http://192.168.2.121/api/1.0/lookup/1/15/0/115
-- Vorlauftemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/15/0/116
-- Kesseltemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/0/117
-
-### Urban
-
-- Aussentemperatur: http://192.168.2.121/api/1.0/lookup/1/15/1/115
-- Vorlauftemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/15/1/116
-- Kesseltemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/1/117
-
-
-### Bahr
-
-- Aussentemperatur: http://192.168.2.121/api/1.0/lookup/1/16/1/115
-- Vorlauftemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/1/116
-- Kesseltemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/1/117
-
-
-### Basler
-
-- Aussentemperatur: http://192.168.2.121/api/1.0/lookup/1/16/0/115
-- Vorlauftemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/0/116
-- Kesseltemperatur (ist-Soll): http://192.168.2.121/api/1.0/lookup/1/16/0/117
-
-
-
-        'Alarmcode',                  '1/60/0/155/4',
-        'Betriebsart',                '1/60/0/155/1',
-        'Betriebsphase',              '1/60/0/155/2',
-        'Betriebsstunden',            '1/60/0/156/2',
-        'Laufzeit_bis_Reinigung',     '1/60/0/156/3',
-        'WarmWasser_IST',             '1/15/0/114/0',
-        'WarmWasser_SOLL',            '1/15/0/114/1',
-        'Aussentemperatur',           '1/15/0/115/0',
-        'VorlaufTemp_IST',            '1/15/0/116/0',
-        'VorlaufTemp_SOLL',           '1/15/0/116/1',
-        'KesselTemp_IST',             '1/60/0/155/0',
-        'KesselTemp_SOLL',            '1/60/0/156/0',
-        'PufferTemp_Unten',           '1/15/0/118/0',
-        'KesselReinigung',            '1/60/0/156/3',
-        'Kesselleistung',             '1/60/0/156/7',
-        'AbgasTemperatur',            '1/60/0/156/9',
-        'Brennerstarts',              '1/60/0/156/8',
-        'Pelletsverbrauch',           '1/60/0/156/10'

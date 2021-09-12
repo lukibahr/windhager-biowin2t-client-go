@@ -4,10 +4,6 @@ import (
 	"testing"
 )
 
-var (
-	client *WindhagerClient
-)
-
 func TestNewClient(t *testing.T) {
 	url := "http://localhost/api/1.0/lookup"
 	username := "usr"

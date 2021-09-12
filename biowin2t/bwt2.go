@@ -12,10 +12,6 @@ import (
 	dac "github.com/xinsnake/go-http-digest-auth-client"
 )
 
-const (
-	version = "1.0.0"
-)
-
 // WindhagerClient represents the WindhagerClient struct .
 type WindhagerClient struct {
 	MesEndpoint string
@@ -61,18 +57,6 @@ type errorResponse struct {
 type successResponse struct {
 	StatusCode int         `json:"code"`
 	Body       interface{} `json:"body"` // e.g. {"result: success"}
-}
-
-func respondWithError(w http.ResponseWriter, code int, message string) {
-	respondWithJSON(w, code, map[string]string{"error": message})
-}
-
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
-	response, _ := json.Marshal(payload)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write(response)
 }
 
 func (c *WindhagerClient) sendRequest(req *http.Request) (*successResponse, error) {

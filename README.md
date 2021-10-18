@@ -76,4 +76,8 @@ Sample response looks like the following:
 }
 ```
 
+## insights
+
+-https://github.com/cedi/kkpctl/blob/main/pkg/client/machinedeployment.go
+
 

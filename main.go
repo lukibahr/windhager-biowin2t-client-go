@@ -27,10 +27,10 @@ func main() {
 	}
 	c := biowin2t.NewWindhagerClient(url,
 		username, password)
-	result, err := c.GetTimeUntilNextMajorMaintenanceInHours(ctx)
+	result, err := c.GetOutsideTemperatureInCelcius(ctx)
 	if err != nil {
 		log.Panicf("Exiting: %s", err)
 	}
-	fmt.Print(result)
+	fmt.Print(result.MetricBody.Value)
 
 }

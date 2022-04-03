@@ -1,0 +1,34 @@
+# I just wanted to give taskfile.dev another try. This is optional. Get task here https://taskfile.dev/#/
+# Next create a .env file
+ 
+version: '3'
+ 
+vars:
+  GOLANGCILINT:
+    sh: which golangci-lint
+ 
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+ 
+  lint:
+    desc: Run golangci-lint on your sourcecode
+    preconditions:
+      - sh: "[ '{{.GOLANGCILINT}}' != '<no value>' ]"
+        msg: "golangci-lint executable not found"
+    cmds:
+      - |
+       golangci-lint run -v ./...
+    silent: false
+ 
+  test:
+    desc: Run golangci-lint on your sourcecode
+    preconditions:
+      - sh: "[ '{{.GOLANGCILINT}}' != '<no value>' ]"
+        msg: "golangci-lint executable not found"
+    cmds:
+      - |
+       go test -v
+    silent: false

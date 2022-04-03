@@ -75,9 +75,3 @@ Sample response looks like the following:
     "writeProt": false
 }
 ```
-
-## insights
-
--https://github.com/cedi/kkpctl/blob/main/pkg/client/machinedeployment.go
-
-

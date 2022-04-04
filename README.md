@@ -6,30 +6,6 @@ Windhager BioWinTouch 2 goes cloud native with Go.
 
 The UI is served by the Windhager pellet appliance built-in MES inifinity controller. Behind the UI, a REST API serves all values that are avaialable through the ui or the touch panel. More information about the mes infinity controller can be found here: [https://www.windhager.com/int_en/products/control/mes-infinity/](https://www.windhager.com/int_en/products/control/mes-infinity/)
 
-## Installation
-
-go-github is compatible with modern Go releases in module mode, with Go installed:
-
-```bash
-go get github.com/google/go-github/v39
-```
-
-will resolve and add the package to the current development module, along with its dependencies.
-
-Alternatively the same can be achieved if you use import in a package:
-
-```go
-import "github.com/google/go-github/v39/github"
-```
-
-and run `go get` without parameters.
-
-Finally, to use the top-of-trunk version of this repo, use the following command:
-
-```bash
-go get github.com/google/go-github/v39@master
-```
-
 ## Usage
 
 ```go
@@ -43,12 +19,12 @@ access different parts of the Windhager BioWin2T API. Make sure to pass the requ
 client := github.NewWindhagerClient("url", "username", "password")
 ```
 
-Some API methods have optional parameters that can be passed. For example:
-
 NOTE: Using the [context](https://godoc.org/context) package, one can easily
 pass cancelation signals and deadlines to various services of the client for
 handling a request. In case there is no context available, then `context.Background()`
 can be used as a starting point.
+
+An example can be found in the `examples/` folder.
 
 ## Curling the API
 
@@ -75,3 +51,13 @@ Sample response looks like the following:
     "writeProt": false
 }
 ```
+
+More details and docs are coming soon. This is really in a early stage of development. The internal architecture of the webserver and how the api and the metrics are organized makes building a proper api client fuzzying.
+
+## ToDo's
+
+- Add more metrics
+- Write tests
+
+stay tuned.
+:heavy metal:

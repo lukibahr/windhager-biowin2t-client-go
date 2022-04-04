@@ -59,7 +59,6 @@ type successResponse struct {
 }
 
 func (c *WindhagerClient) sendRequest(req *http.Request) (*successResponse, error) {
-
 	var metric Metric
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	req.Header.Set("Accept", "application/json; charset=utf-8")
@@ -92,7 +91,6 @@ func (c *WindhagerClient) sendRequest(req *http.Request) (*successResponse, erro
 
 // GetTimeUntilNextMajorMaintenanceInHours returns the time until the next major maintenance in hours
 func (c *WindhagerClient) GetTimeUntilNextMajorMaintenanceInHours(ctx context.Context) (*successResponse, error) {
-	//http://192.168.2.121/api/1.0/lookup/1/60/0/98/9
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/9", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -109,7 +107,6 @@ func (c *WindhagerClient) GetTimeUntilNextMajorMaintenanceInHours(ctx context.Co
 
 // GetTimeUntilNextMaintenanceInHours returns the time until the next maintenance in hours
 func (c *WindhagerClient) GetTimeUntilNextMaintenanceInHours(ctx context.Context) (*successResponse, error) {
-	// - Laufzeit bis Reinigung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/8
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/8", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -125,9 +122,8 @@ func (c *WindhagerClient) GetTimeUntilNextMaintenanceInHours(ctx context.Context
 	return res, nil
 }
 
-// GetCountOfBurningUnit returns the count of burning units
-func (c *WindhagerClient) GetCountOfBurningUnit(ctx context.Context) (*successResponse, error) {
-	// - Anzahl der Brennerstarts: http://192.168.2.121/api/1.0/lookup/1/60/0/98/3
+// GetCountOfBurningUnitStarts returns the count of burning unit starts
+func (c *WindhagerClient) GetCountOfBurningUnitStarts(ctx context.Context) (*successResponse, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/3", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -142,9 +138,8 @@ func (c *WindhagerClient) GetCountOfBurningUnit(ctx context.Context) (*successRe
 	return res, nil
 }
 
-// GetExhaustGasesInCelsius returns the exhaust gases in celsius
+// GetExhaustGasesInCelsius returns the temperature of exhaust gases in celsius
 func (c *WindhagerClient) GetExhaustGasesInCelsius(ctx context.Context) (*successResponse, error) {
-	// - Temperatur Abgas: http://192.168.2.121/api/1.0/lookup/1/60/0/98/1
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/1", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -162,7 +157,6 @@ func (c *WindhagerClient) GetExhaustGasesInCelsius(ctx context.Context) (*succes
 
 // GetCurrentBoilerPerformanceInPercent returns the current boiler performance in percent
 func (c *WindhagerClient) GetCurrentBoilerPerformanceInPercent(ctx context.Context) (*successResponse, error) {
-	// - Aktuelle Kesselleistung: http://192.168.2.121/api/1.0/lookup/1/60/0/98/0
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/0", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -180,7 +174,6 @@ func (c *WindhagerClient) GetCurrentBoilerPerformanceInPercent(ctx context.Conte
 
 // GetCurrentBoilerTemperatureInCelsius returns the current boiler temperature in celsius
 func (c *WindhagerClient) GetCurrentBoilerTemperatureInCelsius(ctx context.Context) (*successResponse, error) {
-	// - Kesseltemperatur Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/1
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/1", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -198,7 +191,6 @@ func (c *WindhagerClient) GetCurrentBoilerTemperatureInCelsius(ctx context.Conte
 
 // GetCombustionChamberTemperatureInCelsius returns the combustion chamber temperature in celsius
 func (c *WindhagerClient) GetCombustionChamberTemperatureInCelsius(ctx context.Context) (*successResponse, error) {
-	// - Brennkammertemperatur: http://192.168.2.103/api/1.0/lookup/1/60/0/100/2
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/2", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -216,7 +208,6 @@ func (c *WindhagerClient) GetCombustionChamberTemperatureInCelsius(ctx context.C
 
 // GetOperationalPhase returns the operational phase as an integer
 func (c *WindhagerClient) GetOperationalPhase(ctx context.Context) (*successResponse, error) {
-	// - Aktuelle Betriebsphase: http://192.168.2.121/api/1.0/lookup/1/60/0/100/3
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/3", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -234,7 +225,6 @@ func (c *WindhagerClient) GetOperationalPhase(ctx context.Context) (*successResp
 
 // GetPelletAmountOfScrewConveyor returns the pellet amount of screw conveyor in kilograms
 func (c *WindhagerClient) GetPelletAmountOfScrewConveyor(ctx context.Context) (*successResponse, error) {
-	// - Brennstoffmenge Förderschnecke Istwert: http://192.168.2.121/api/1.0/lookup/1/60/0/100/9
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/100/9", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -252,7 +242,6 @@ func (c *WindhagerClient) GetPelletAmountOfScrewConveyor(ctx context.Context) (*
 
 // GetTotalOperationalRuntimeInHours returns the total operational runtime in hours
 func (c *WindhagerClient) GetTotalOperationalRuntimeInHours(ctx context.Context) (*successResponse, error) {
-	// - Betriebsstunden: http://192.168.2.121/api/1.0/lookup/1/60/0/98/4
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/60/0/98/4", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -268,10 +257,10 @@ func (c *WindhagerClient) GetTotalOperationalRuntimeInHours(ctx context.Context)
 	return res, nil
 }
 
-// @ToDo: marshal eror
+// TODO: marshal eror, the response does not match the defined struct. fix this
+
 // GetDomesticHotWaterTemperatureInCelcius returns the domestic hot water temperature in celsius
 func (c *WindhagerClient) GetDomesticHotWaterTemperatureInCelcius(ctx context.Context) (*successResponse, error) {
-	// - Warmwasser temp ist-wert (oben) soll-wert unten: <http://192.168.2.103/api/1.0/lookup/1/16/0/114>
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/16/0/114", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
@@ -287,10 +276,10 @@ func (c *WindhagerClient) GetDomesticHotWaterTemperatureInCelcius(ctx context.Co
 	return res, nil
 }
 
-// @ToDo: marshal eror
+// TODO: marshal eror, the response does not match the defined struct. fix this
+
 // GetOutsideTemperatureInCelcius returns the outside temperature in celsius
 func (c *WindhagerClient) GetOutsideTemperatureInCelcius(ctx context.Context) (*successResponse, error) {
-	//- Aussentemperatur: <http://192.168.2.103/api/1.0/lookup/1/15/0/115>
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/15/0/115", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err

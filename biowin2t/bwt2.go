@@ -257,7 +257,7 @@ func (c *WindhagerClient) GetTotalOperationalRuntimeInHours(ctx context.Context)
 	return res, nil
 }
 
-// TODO: marshal eror, the response does not match the defined struct. fix this
+// TODO: marshal eror, the response does not match the defined struct. fix this, see ./BUGS.md
 
 // GetDomesticHotWaterTemperatureInCelcius returns the domestic hot water temperature in celsius
 func (c *WindhagerClient) GetDomesticHotWaterTemperatureInCelcius(ctx context.Context) (*successResponse, error) {
@@ -276,7 +276,7 @@ func (c *WindhagerClient) GetDomesticHotWaterTemperatureInCelcius(ctx context.Co
 	return res, nil
 }
 
-// TODO: marshal eror, the response does not match the defined struct. fix this
+// TODO: marshal eror, the response does not match the defined struct. fix this, see ./BUGS.md
 
 // GetOutsideTemperatureInCelcius returns the outside temperature in celsius
 func (c *WindhagerClient) GetOutsideTemperatureInCelcius(ctx context.Context) (*successResponse, error) {

@@ -261,7 +261,7 @@ func (c *WindhagerClient) GetTotalOperationalRuntimeInHours(ctx context.Context)
 
 // GetDomesticHotWaterTemperatureInCelcius returns the domestic hot water temperature in celsius
 func (c *WindhagerClient) GetDomesticHotWaterTemperatureInCelcius(ctx context.Context) (*successResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/16/0/114", c.MesEndpoint), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/1/16/0/114/0", c.MesEndpoint), nil)
 	if err != nil {
 		return nil, err
 	}

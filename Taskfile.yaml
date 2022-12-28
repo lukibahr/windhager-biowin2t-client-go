@@ -24,11 +24,8 @@ tasks:
     silent: false
  
   test:
-    desc: Run golangci-lint on your sourcecode
-    preconditions:
-      - sh: "[ '{{.GOLANGCILINT}}' != '<no value>' ]"
-        msg: "golangci-lint executable not found"
+    desc: Run go test on your sourcecode
     cmds:
       - |
-       go test -v
+       go test -v ./...
     silent: false

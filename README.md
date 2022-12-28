@@ -60,4 +60,3 @@ More details and docs are coming soon. This is really in a early stage of develo
 - Write tests
 
 stay tuned.
-:heavy metal:
